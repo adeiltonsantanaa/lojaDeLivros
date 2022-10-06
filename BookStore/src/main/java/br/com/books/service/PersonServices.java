@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.books.data.vo.v1.PersonVO;
 import br.com.books.exceptions.ResourceNotFoundException;
+import br.com.books.mapper.DozerMapper;
 import br.com.books.model.Person;
 import br.com.books.repositories.PersonRepository;
 
@@ -15,27 +17,30 @@ public class PersonServices {
 	@Autowired
 	private PersonRepository personRepository;
 
-	public Person findById(Long id) {
-		return personRepository.findById(id)
+	public PersonVO findById(Long id) {
+		var person = personRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Pessoa não encontrada. " + id));
+		return DozerMapper.parseObject(person, PersonVO.class);
 	}
 
-	public List<Person> findAll() {
-		return personRepository.findAll();
+	public List<PersonVO> findAll() {
+		return DozerMapper.parseListObjects(personRepository.findAll(), PersonVO.class);
 	}
 
-	public Person create(Person person) {
-		return personRepository.save(person);
+	public PersonVO create(PersonVO person) {
+		var personSave = DozerMapper.parseObject(person, Person.class);
+		return DozerMapper.parseObject(personRepository.save(personSave), PersonVO.class);
 	}
 
-	public Person update(Person person) {
-		Person person2 = personRepository.findById(person.getId())
+	public PersonVO update(PersonVO personVO) {
+		var person = DozerMapper.parseObject(personVO, Person.class);
+		var person2 = personRepository.findById(person.getId())
 				.orElseThrow(() -> new ResourceNotFoundException("Pessoa não encontrada. " + person.getId()));
 		person2.setFirstName(person.getFirstName());
 		person2.setLastName(person.getLastName());
 		person2.setAddress(person.getAddress());
 		person2.setGender(person.getGender());
-		return personRepository.save(person2);
+		return DozerMapper.parseObject(personRepository.save(person2), PersonVO.class);
 	}
 
 	public void delete(Long id) {

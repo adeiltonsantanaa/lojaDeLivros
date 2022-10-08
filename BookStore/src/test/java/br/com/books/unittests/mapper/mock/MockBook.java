@@ -49,7 +49,7 @@ public class MockBook {
 		bookVO.setLaunchDate(LocalDate.now());
 		bookVO.setPrice(20.0F);
 		bookVO.setKey(number.longValue());
-		bookVO.setTitle("Last Name Test" + number);
+		bookVO.setTitle("Title Test" + number);
 		return bookVO;
 	}
 

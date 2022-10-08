@@ -3,7 +3,6 @@ package br.com.books.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
@@ -55,7 +54,6 @@ class BookServicesTest {
 		assertNotNull(result.getKey());
 		assertNotNull(result.getLinks());
 
-		System.out.println(result.toString());
 		assertTrue(result.toString().contains("links: [</api/v1/book>;rel=\"self\"]"));
 		assertEquals("Author Test1", result.getAuthor());
 		equals(LocalDate.now());
@@ -78,7 +76,6 @@ class BookServicesTest {
 		assertNotNull(bookOne.getKey());
 		assertNotNull(bookOne.getLinks());
 
-		System.out.println(bookOne.toString());
 		assertTrue(bookOne.toString().contains("links: [</api/v1/book/1>;rel=\"self\"]"));
 		assertEquals("Author Test1", bookOne.getAuthor());
 		equals(LocalDate.now());
@@ -102,7 +99,7 @@ class BookServicesTest {
 		Book book = input.mockEntity(1);
 		Book persisted = book;
 		persisted.setId(1L);
-		
+
 		BookVO vo = input.mockVO(1);
 		vo.setKey(1L);
 
@@ -112,22 +109,43 @@ class BookServicesTest {
 		assertNotNull(result.getKey());
 		assertNotNull(result.getLinks());
 
-		System.out.println(result.toString());
-		assertTrue(result.toString().contains("links: [</api/v1/book>;rel=\"self\"]"));
+		assertTrue(result.toString().contains("links: [</api/v1/book/1>;rel=\"self\"]"));
 		assertEquals("Author Test1", result.getAuthor());
 		equals(LocalDate.now());
 		assertEquals("Title Test1", result.getTitle());
-		
+
 	}
 
 	@Test
 	void testUpdate() {
-		fail("Not yet implemented");
+		Book book = input.mockEntity(1);
+		Book persisted = book;
+		persisted.setId(1L);
+
+		BookVO vo = input.mockVO(1);
+		vo.setKey(1L);
+
+		when(repository.findById(1L)).thenReturn(Optional.of(book));
+		when(repository.save(book)).thenReturn(persisted);
+		var result = service.update(vo);
+		assertNotNull(result);
+		assertNotNull(result.getKey());
+		assertNotNull(result.getLinks());
+
+		assertTrue(result.toString().contains("links: [</api/v1/book/1>;rel=\"self\"]"));
+		assertEquals("Author Test1", result.getAuthor());
+		equals(LocalDate.now());
+		assertEquals("Title Test1", result.getTitle());
 	}
 
 	@Test
 	void testDelete() {
-		fail("Not yet implemented");
+		Book book = input.mockEntity(1);
+		book.setId(1L);
+
+		when(repository.findById(1L)).thenReturn(Optional.of(book));
+
+		service.delete(1L);
 	}
 
 }
